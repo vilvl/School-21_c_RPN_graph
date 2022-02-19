@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-struct mb_dbl process_lexems(struct list* lexems, struct stack* RPN, struct stack* tmp);
-void calculate_with_RPN(struct stack* RPN, double x);
+int process_lexems(struct list* lexems, struct stack* RPN, struct stack* tmp);
+struct mb_dbl calculate_with_RPN(struct stack* RPN, double x);
 
 #endif  // SRC_RPN_H_

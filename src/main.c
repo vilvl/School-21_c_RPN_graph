@@ -6,10 +6,9 @@
 
 #include "input.h"
 #include "rpn.h"
-#include "process.h"
 
 void close_with_messege(int code, char* messege, struct list* lexems, struct stack* RPN, struct stack* tmp);
-void fill_array(double ey[], struct stack* RPN);
+void fill_array(struct mb_dbl ey[], struct stack* RPN);
 
 int main() {
 
@@ -32,7 +31,7 @@ int main() {
     close_with_messege(0, "", lexems, RPN, tmp);
 }
 
-void fill_array(double ey[], struct stack* RPN) {
+void fill_array(struct mb_dbl ey[], struct stack* RPN) {
     double step = (X_MAX - X_0) / (FIELD_X - 1);
     for (int i = 0; i < FIELD_X; ++i) {
         ey[i] = calculate_with_RPN(RPN, X_0 + step * i);
