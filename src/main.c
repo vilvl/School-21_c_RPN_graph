@@ -1,68 +1,52 @@
-
 #include <inttypes.h>
+#include <stdio.h>
+
+#include "main.h"
+#include "ds.h"
 
 #include "input.h"
-#include "main.h"
+#include "rpn.h"
+#include "process.h"
 
-
-enum lex_types {
-    NUM,
-    VAR,
-    BIN_OPER,
-    UNO_OPER,
-    ERR,
-};
-
-enum operations {
-    SUM = 0,
-    SUB,
-    MUL,
-    DIV,
-    NEG,  // unary minus
-    POW,
-    SIN,
-    COS,
-    TAN,
-    CTG,
-    LN,
-    SQRT,
-    BRO,
-    BRC
-};
-
-struct lexem {
-    enum lex_types lex_type;
-    union lex{
-        double num;
-        enum operations operation;
-    }
-};
-
-int oper_priorities[15];
-
+void close_with_messege(int code, char* messege, struct list* lexems, struct stack* RPN, struct stack* tmp);
+void fill_array(double ey[], struct stack* RPN);
 
 int main() {
 
-    set_priorities();
-
+    struct list* lexems = init_list();
     struct stack* RPN = init_stack();
     struct stack* tmp = init_stack();
 
-    struct lexem lex;
-    while (get_lexem(&lex)) {
-        if (lex.lex_type == ERR)
-            close_with_messege(1, "wrong input", RPN, tmp);
-        if (!process_lexem(&lex, RPN, tmp))
-            close_with_messege(1, "logic error", RPN, tmp);
-    }
+    // struct lexem lex;
 
+    if (!get_lexems_from_input(lexems))
+        close_with_messege(1, "wrong input", lexems, RPN, tmp);
+    if (!process_lexems(lexems, RPN, tmp))
+        close_with_messege(1, "logic error", lexems, RPN, tmp);
+
+    struct mb_dbl ey[FIELD_X];
+    fill_array(ey, RPN);
+
+    draw_by_array(ey);
+
+    close_with_messege(0, "", lexems, RPN, tmp);
 }
 
-void close_with_messege(int code, char* messege, struct stack* RPN, struct stack* tmp) {
+void fill_array(double ey[], struct stack* RPN) {
+    double step = (X_MAX - X_0) / (FIELD_X - 1);
+    for (int i = 0; i < FIELD_X; ++i) {
+        ey[i] = calculate_with_RPN(RPN, X_0 + step * i);
+    }
+}
+
+void close_with_messege(int code, char* messege, struct list* lexems, struct stack* RPN, struct stack* tmp) {
+    if (lexems)
+        destroy(lexems);
     if (RPN)
         destroy_stack(RPN);
     if (tmp)
         destroy_stack(tmp);
-    printf("%s\n", messege);
+    if (*messege != '\0')
+        printf("%s\n", messege);
     exit(code);
 }
