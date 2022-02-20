@@ -22,8 +22,8 @@ void draw_by_array(struct mb_dbl ey[FIELD_X]) {
     int y_goal = 0;
     int x_goal ;
 
-    for (int row = 0; row < 25; ++row) {
-        for (int column = 0; column < 80; ++column) {
+    for (int row = 0; row < FIELD_Y; ++row) {
+        for (int column = 0; column < FIELD_X; ++column) {
             if (ey[column].valid == 1) {
                 x_goal = convert(ey[column].num);
                 if (x_goal == row) {
@@ -64,7 +64,7 @@ double* create_array(double * ar) {
         ar[i] = y;
 }
 
- for (int j = 0; j < 80; j++) {
+ for (int j = 0; j < FIELD_X; j++) {
   //  printf("%.1d\n", convert(ar[j]));
  }
    return ar;
