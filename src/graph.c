@@ -5,16 +5,16 @@
 
 int convert(double old);
 double* create_array(double*ar);
-void draw_by_array(struct mb_dbl ar_draw[80]);
+void draw_by_array(struct mb_dbl ey[FIELD_X]);
 
 
 
 int main() {
-    draw_by_array(mb_dbl, ar_draw[80]);
+    draw_by_array(mb_dbl, ey[FIELD_X]);
 return 0;
 }
 
-void draw_by_array(struct mb_dbl ar_draw[80]) {
+void draw_by_array(struct mb_dbl ey[FIELD_X]) {
     //double ar[80];
     //create_array(ar);
 
@@ -24,8 +24,8 @@ void draw_by_array(struct mb_dbl ar_draw[80]) {
 
     for (int row = 0; row < 25; ++row) {
         for (int column = 0; column < 80; ++column) {
-            if (ar_draw[column].valid == 1) {
-                x_goal = convert(ar_draw[column].num);
+            if (ey[column].valid == 1) {
+                x_goal = convert(ey[column].num);
                 if (x_goal == row) {
                 printf("*");
             }
