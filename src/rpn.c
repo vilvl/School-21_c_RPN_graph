@@ -64,17 +64,18 @@ void process_oper(struct node** RPN, struct node** RPN_last, struct stack* tmp, 
 }
 
 int process_BRC(struct node** RPN, struct node** RPN_last, struct stack* tmp) {
+    int ret = 0;
     struct lexem curr;
     while (pop(tmp, &curr) && curr.operation != BRO) {
         RPN_add_back(RPN, RPN_last, curr);
     }
     if (curr.operation != BRO)
-        return -1;
+        ret = -1;
     if (peek(tmp, &curr) && get_operation_priority(curr.operation) == 2) {
         pop(tmp, &curr);
         RPN_add_back(RPN, RPN_last, curr);
     }
-    return 0;
+    return ret;
 }
 
 void define_minus(struct node* prev, struct node* lexems) {
@@ -165,25 +166,29 @@ void apply_operation(struct stack* tmp, enum operations oper) {
 }
 
 double apply_unary_operation(enum operations oper, double a) {
+    double ret = NAN;
     switch (oper) {
-        case SIN: return sin(a);
-        case COS: return cos(a);
-        case TAN: return tan(a);
-        case CTG: return 1.0/tan(a);
-        case LN: return log(a);
-        case SQRT: return sqrt(a);
-        case NEG: return -a;
-        default: return NAN;
+        case SIN: ret = sin(a); break;
+        case COS: ret = cos(a); break;
+        case TAN: ret = tan(a); break;
+        case CTG: ret = 1.0/tan(a); break;
+        case LN: ret = log(a); break;
+        case SQRT: ret = sqrt(a); break;
+        case NEG: ret = -a; break;
+        default: ret = NAN; break;
     }
+    return ret;
 }
 
 double apply_binary_operation(enum operations oper, double a, double b) {
+    double ret = NAN;
     switch (oper) {
-        case SUM: return a + b;
-        case SUB: return a - b;
-        case MUL: return a * b;
-        case DIV: return a / b;
-        case POW: return pow(a, b);
-        default: return NAN;
+        case SUM: ret = a + b; break;
+        case SUB: ret = a - b; break;
+        case MUL: ret = a * b; break;
+        case DIV: ret = a / b; break;
+        case POW: ret = pow(a, b); break;
+        default: ret = NAN; break;
     }
+    return ret;
 }

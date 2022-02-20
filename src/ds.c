@@ -24,31 +24,37 @@ void stack_destroy(struct stack **s) {
 }
 
 int push(struct stack *s, struct lexem value) {
-    if (!s)
-        return 0;
-    // tmp is either located in heap or NULL
-    struct node* tmp = list_add_front(s->data, value);
-    if (tmp == NULL)
-        return 0;
-    s->data = tmp;
-    s->size++;
-    return 1;
+    int ret = 0;
+    if (s) {
+        // tmp is either located in heap or NULL
+        struct node* tmp = list_add_front(s->data, value);
+        if (tmp != NULL) {
+            s->data = tmp;
+            s->size++;
+            ret = 1;
+        }
+    }
+    return ret;
 }
 
 int pop(struct stack *s, struct lexem *value) {
-    if (s == NULL || s->size == 0 || s->data == NULL)
-        return 0;
-    *value = s->data->value;
-    s->data = list_remove_front(s->data);
-    s->size--;
-    return 1;
+    int ret = 0;
+    if (s != NULL && s->size > 0 && s->data != NULL) {
+        *value = s->data->value;
+        s->data = list_remove_front(s->data);
+        s->size--;
+        ret = 1;
+    }
+    return ret;
 }
 
 int peek(struct stack *s, struct lexem *value) {
-    if (s == NULL || s->size == 0 || s->data == NULL)
-        return 0;
-    *value = s->data->value;
-    return 1;
+    int ret = 0;
+    if (s != NULL && s->size != 0 && s->data != NULL) {
+        ret = 1;
+        *value = s->data->value;
+    }
+    return ret;
 }
 
 struct node* list_remove_front(struct node* root) {
@@ -60,10 +66,8 @@ struct node* list_remove_front(struct node* root) {
 
 struct node* list_add_front(struct node* root, struct lexem value) {
     struct node *inj = list_init(value);
-    if (inj == NULL) {
-        return NULL;
-    }
-    inj->next = root;
+    if (inj)
+        inj->next = root;
     return inj;
 }
 
@@ -71,19 +75,17 @@ struct node* list_add_back(struct node* root, struct lexem value) {
     while (root && root->next)
         root = root->next;
     struct node *inj = list_init(value);
-    if (inj == NULL)
-        return NULL;
-    if (root)
+    if (inj && root)
         root->next = inj;
     return inj;
 }
 
 struct node* list_init(struct lexem value) {
     struct node* new_node = malloc(sizeof(struct node));
-    if (new_node == NULL)
-        return NULL;
-    new_node->value = value;
-    new_node->next = NULL;
+    if (new_node) {
+        new_node->value = value;
+        new_node->next = NULL;
+    }
     return new_node;
 }
 
