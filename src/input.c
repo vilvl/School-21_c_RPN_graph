@@ -19,32 +19,35 @@ int get_lexems_from_input(struct node** head_list) {
     if (fgets(str_input, 1024, stdin) == NULL)
         ret = -1;
 
-    while (str_input[i] != '\0') {
+    while (str_input[i] != '\0' && str_input[i] != '\n' && ret != -1) {
         struct lexem a;
         c = str_input[i];
         if (str_input[i] == ' ') {
             i++;
             continue;
-        }
-        if (c == '*' || c == '/' || c == '+' || c == 'x' ||
+        } else if (c == '*' || c == '/' || c == '+' || c == 'x' ||
             c == '-' || c == '(' || c == ')' || c == '^') {
             ret_math_operations(&a, c);
-        }
-        if ((c <= '9' && c >= '0') || c == '.') {
+        } else if ((c <= '9' && c >= '0') || c == '.') {
             if (numbers_search(&i, str_input, &c, &a) == -1) {
                 ret = -1;
                 break;
             }
-        }
-        if (c == 'c' || c == 't' || c == 's' || c == 'l') {
-            if (tg_search(&i, str_input, &c, &a) == -1)
+        } else if (c == 'c' || c == 't' || c == 's' || c == 'l') {
+            if (tg_search(&i, str_input, &c, &a) == -1) {
                 ret = -1;
+                break;
+            }
+        } else {
+            ret = -1;
+            break;
         }
         i += 1;
         last_list = list_add_back(last_list, a);
         if (!*head_list)
             *head_list = last_list;
     }
+    // printf("%c\n", str_input[i]);
     return ret;
 }
 

@@ -22,12 +22,6 @@ int main() {
         close_with_messege(1, "wrong input", lexems, RPN, tmp);
     // printf("infix: \n");
     // output_list(lexems);
-    // why last one is doubled??
-    struct node* head = lexems;
-    while (head->next->next)
-        head = head->next;
-    head->next = NULL;
-    // end of kostyl
     if (-1 == process_lexems(lexems, &RPN, tmp))
         close_with_messege(1, "logic error", lexems, RPN, tmp);
 
