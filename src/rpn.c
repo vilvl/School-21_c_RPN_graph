@@ -14,7 +14,7 @@ int get_operation_priority(enum operations oper);
 void apply_operation(struct stack* tmp, enum operations oper);
 double apply_unary_operation(enum operations oper, double a);
 double apply_binary_operation(enum operations oper, double a, double b);
-
+int check_incorrect_priorities(enum operations a, enum operations b);
 
 int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
     struct node* RPN_last = *RPN;
@@ -39,6 +39,11 @@ int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
         } else {
             RPN_add_back(RPN, &RPN_last, lexems->value);
         }
+        if (prev && prev->value.lex_type != OPER && lexems->value.lex_type != OPER)
+            ret = -1;
+        if (prev && prev->value.lex_type == OPER && lexems->value.lex_type == OPER
+                && check_incorrect_priorities(prev->value.operation, lexems->value.operation))
+            ret = -1;
         prev = lexems;
         lexems = lexems->next;
     }
@@ -49,6 +54,12 @@ int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
         RPN_add_back(RPN, &RPN_last, curr);
     }
     return ret;
+}
+
+int check_incorrect_priorities(enum operations a, enum operations b) {
+    int pr1 = get_operation_priority(a);
+    int pr2 = get_operation_priority(b);
+    return ((pr1 == 1 || pr1 == 0 || pr1 == 3) && (pr2 == 1 || pr2 == 0 || pr2 == 3));
 }
 
 void process_oper(struct node** RPN, struct node** RPN_last, struct stack* tmp, struct lexem value) {
