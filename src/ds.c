@@ -44,6 +44,13 @@ int pop(struct stack *s, struct lexem *value) {
     return 1;
 }
 
+int peek(struct stack *s, struct lexem *value) {
+    if (s == NULL || s->size == 0 || s->data == NULL)
+        return 0;
+    *value = s->data->value;
+    return 1;
+}
+
 struct node* list_remove_front(struct node* root) {
     struct node* new_root = root->next;
     root->next = NULL;
@@ -57,6 +64,16 @@ struct node* list_add_front(struct node* root, struct lexem value) {
         return NULL;
     }
     inj->next = root;
+    return inj;
+}
+
+struct node* list_add_back(struct node* root, struct lexem value) {
+    struct node *inj = list_init(value);
+    if (inj == NULL) {
+        return NULL;
+    }
+    if (root)
+        root->next = inj;
     return inj;
 }
 
@@ -75,3 +92,4 @@ void list_destroy(struct node* root) {
         free(root);
     }
 }
+

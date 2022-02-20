@@ -24,7 +24,7 @@ enum lex_types {
 
 enum operations {
     SUM = 0,
-    SUB,
+    SUB,  // binary minus
     MUL,
     DIV,
     NEG,  // unary minus
@@ -36,7 +36,8 @@ enum operations {
     LN,
     SQRT,
     BRO,
-    BRC
+    BRC,
+    MINUS  // undefined minus
 };
 
 struct lexem {
