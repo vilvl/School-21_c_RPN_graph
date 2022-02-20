@@ -12,7 +12,6 @@ void close_with_messege(int code, char* messege, struct node* lexems, struct nod
 void fill_array(struct mb_dbl ey[], struct node* RPN, struct stack* tmp);
 
 int main() {
-
     struct node* lexems = NULL;
     struct node* RPN = NULL;
     struct stack* tmp = stack_init();
@@ -21,6 +20,8 @@ int main() {
 
     if (-1 == get_lexems_from_input(&lexems))
         close_with_messege(1, "wrong input", lexems, RPN, tmp);
+    // printf("infix: \n");
+    // output_list(lexems);
     // why last one is doubled??
     struct node* head = lexems;
     while (head->next->next)
@@ -30,14 +31,15 @@ int main() {
     if (-1 == process_lexems(lexems, &RPN, tmp))
         close_with_messege(1, "logic error", lexems, RPN, tmp);
 
-    output_list(RPN);
+    // printf("RPN: \n");
+    // output_list(RPN);
 
-    printf("stack_size %zu\n", tmp->size);
+    // printf("stack_size %zu\n", tmp->size);
     struct mb_dbl ey[FIELD_X];
     fill_array(ey, RPN, tmp);
-    for (int i = 0; i < FIELD_X; i++) {
-        printf("%.2lf ", ey[i].num);
-    }
+    // for (int i = 0; i < FIELD_X; i++) {
+    //     printf("%.2lf ", ey[i].num);
+    // }
 
     draw_by_array(ey);
 

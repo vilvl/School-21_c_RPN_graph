@@ -17,7 +17,6 @@ double apply_binary_operation(enum operations oper, double a, double b);
 
 
 int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
-
     struct node* RPN_last = *RPN;
     struct node* prev = NULL;
     struct lexem curr;
@@ -31,8 +30,8 @@ int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
                 push(tmp, lexems->value);
             } else if (lexems->value.operation == BRC) {
                 process_BRC(RPN, &RPN_last, tmp);
-            } else if (get_operation_priority(curr.operation) == 3) {
-                push(tmp, lexems->value);
+            // } else if (get_operation_priority(curr.operation) == 3) {
+            //    push(tmp, lexems->value);
             } else {
                 process_oper(RPN, &RPN_last, tmp, lexems->value);
                 push(tmp, lexems->value);
@@ -53,10 +52,10 @@ int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
 void process_oper(struct node** RPN, struct node** RPN_last, struct stack* tmp, struct lexem value) {
     struct lexem curr;
     while (peek(tmp, &curr) && (curr.operation != BRO) &&
-            (value.operation = POW &&
+            ((value.operation == POW &&
                 (get_operation_priority(curr.operation)
-                > get_operation_priority(value.operation))
-            || (value.operation != POW &&
+                > get_operation_priority(value.operation)))
+            || ((value.operation != POW) &&
                 (get_operation_priority(curr.operation)
                 >= get_operation_priority(value.operation))))) {
         pop(tmp, &curr);
@@ -71,7 +70,7 @@ int process_BRC(struct node** RPN, struct node** RPN_last, struct stack* tmp) {
     }
     if (curr.operation != BRO)
         return -1;
-    if (peek(tmp, &curr) && get_operation_priority(curr.operation) == 3) {
+    if (peek(tmp, &curr) && get_operation_priority(curr.operation) == 2) {
         pop(tmp, &curr);
         RPN_add_back(RPN, RPN_last, curr);
     }
@@ -81,7 +80,7 @@ int process_BRC(struct node** RPN, struct node** RPN_last, struct stack* tmp) {
 void define_minus(struct node* prev, struct node* lexems) {
     if (!prev || (prev->value.lex_type == OPER
                  && (prev->value.operation == BRO
-                    || get_operation_priority(prev->value.operation) < 3)))
+                    || get_operation_priority(prev->value.operation) < 4)))
         lexems->value.operation = NEG;
     else
         lexems->value.operation = SUB;
@@ -104,7 +103,7 @@ int get_operation_priority(enum operations oper) {
         case DIV:
             ret = 1; break;
         case POW:
-            ret = 2; break;
+            ret = 3; break;
         case SIN:
         case COS:
         case TAN:
@@ -112,7 +111,7 @@ int get_operation_priority(enum operations oper) {
         case NEG:
         case LN:
         case SQRT:
-            ret = 3; break;
+            ret = 2; break;
         case BRO:
         case BRC:
             ret = 4; break;
@@ -130,9 +129,9 @@ struct mb_dbl calculate_with_RPN(struct node* RPN, struct stack* tmp, double x) 
         if (curr.lex_type == VAR) {
             curr.lex_type = NUM;
             curr.num = x;
-            push( tmp, curr );
+            push(tmp, curr);
         } else if (curr.lex_type == NUM) {
-            push( tmp, curr );
+            push(tmp, curr);
         } else {  // RPN->value.lex_type = OPER
             apply_operation(tmp, curr.operation);
         }
@@ -149,12 +148,12 @@ struct mb_dbl calculate_with_RPN(struct node* RPN, struct stack* tmp, double x) 
 void apply_operation(struct stack* tmp, enum operations oper) {
     struct lexem curr;
     double a, b;
-    if (get_operation_priority(oper) == 3) {
+    if (get_operation_priority(oper) == 2) {
         pop(tmp, &curr);
         a = curr.num;
         curr.num = apply_unary_operation(oper, a);
         push(tmp, curr);
-    } else if (get_operation_priority(oper) < 3) {
+    } else if (get_operation_priority(oper) < 4) {
         pop(tmp, &curr);
         b = curr.num;
         pop(tmp, &curr);
@@ -163,7 +162,6 @@ void apply_operation(struct stack* tmp, enum operations oper) {
         // printf("%lf %lf %lf\n", a, b, curr.num);
         push(tmp, curr);
     }
-
 }
 
 double apply_unary_operation(enum operations oper, double a) {

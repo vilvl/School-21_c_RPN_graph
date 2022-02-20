@@ -3,11 +3,10 @@
 #include "main.h"
 #include "graph.h"
 
-int convert(double old);
-void draw_by_array(struct mb_dbl ey[FIELD_X]);
+void verify_array(struct mb_dbl ey[]);
 
-
-void draw_by_array(struct mb_dbl ey[FIELD_X]) {
+void draw_by_array(struct mb_dbl ey[]) {
+    verify_array(ey);
 
     double step = (Y_MAX - Y_0) / (FIELD_Y - 1);
 
@@ -26,7 +25,7 @@ void draw_by_array(struct mb_dbl ey[FIELD_X]) {
     }
 }
 
-void verify_array(struct mb_dbl ey[FIELD_X]) {
+void verify_array(struct mb_dbl ey[]) {
     for (int i = 0; i < FIELD_X; ++i)
         if (ey[i].valid && (ey[i].num < Y_0 || ey[i].num > Y_MAX))
             ey[i].valid = 0;

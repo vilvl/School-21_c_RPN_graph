@@ -28,7 +28,10 @@ int get_lexems_from_input(struct node** head_list) {
     while (str_input[i] != '\0') {
         struct lexem a;
         c = str_input[i];
-
+        if(str_input[i] == ' ') {
+            i++;
+            continue;
+        }
         if (c == '*' || c == '/' || c == '+' || c == 'x' ||
             c == '-' || c == '(' || c == ')' || c == '^') {
             ret_math_operations(&a, c);  // void
@@ -81,7 +84,7 @@ void ret_math_operations(struct lexem* a, char c) {
         if (c == '/') a->operation =  DIV;
         else if (c == '*') a->operation = MUL;
         else if (c == '+') a->operation = SUM;
-        else if (c == '-') a->operation = SUB;
+        else if (c == '-') a->operation = MINUS;
         else if (c == '(') a->operation = BRO;
         else if (c == ')') a->operation = BRC;
         else if (c == '^') a->operation = POW;

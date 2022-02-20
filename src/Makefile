@@ -6,7 +6,7 @@ SOURCES=ds.c graph.c input.c main.c rpn.c
 OBJECTS=$(SOURCES:.c=.o)
 
 RPN: $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(BUILD_PATH)/RPN
+	$(CC) $(OBJECTS) -o $(BUILD_PATH)/RPN -lm
 
 ds.o: ds.c
 	$(CC) $(CFLAGS) ds.c
