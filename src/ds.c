@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "main.h"
 #include "ds.h"
 
 /////// LIST OF INTS DECL //////////////////
@@ -57,6 +58,19 @@ struct node* list_add_front(struct node* root, struct lexem value) {
         return NULL;
     }
     inj->next = root;
+    return inj;
+}
+
+struct node* list_add_back(struct node* root, struct lexem value) {
+    while (root && root->next != NULL) {
+        root = root->next;
+    }
+    struct node *inj = list_init(value);
+    if (inj == NULL) {
+        return NULL;
+    }
+    if (root)
+        root->next = inj;
     return inj;
 }
 

@@ -3,6 +3,6 @@
 
 #include "main.h"
 
-int get_lexems_from_input(struct list* lexems);
+int get_lexems_from_input(struct node** head_list);
 
 #endif  // SRC_INPUT_H_
