@@ -11,6 +11,10 @@
 #define Y_0 -1.0
 #define Y_max 1.0
 
+#define EMPTY_POINT '.'
+#define FUNC_POINT '*'
+
+
 enum lex_types {
     NUM,
     VAR,

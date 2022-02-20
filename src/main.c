@@ -18,9 +18,9 @@ int main() {
 
     // struct lexem lex;
 
-    if (!get_lexems_from_input(lexems))
+    if (0 == get_lexems_from_input(lexems))
         close_with_messege(1, "wrong input", lexems, RPN, tmp);
-    if (!process_lexems(lexems, RPN, tmp))
+    if (0 == process_lexems(lexems, RPN, tmp))
         close_with_messege(1, "logic error", lexems, RPN, tmp);
 
     struct mb_dbl ey[FIELD_X];
@@ -47,5 +47,5 @@ void close_with_messege(int code, char* messege, struct list* lexems, struct sta
         destroy_stack(tmp);
     if (*messege != '\0')
         printf("%s\n", messege);
-    exit(code);
+    // exit(code);
 }
