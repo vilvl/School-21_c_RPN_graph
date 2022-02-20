@@ -21,15 +21,36 @@ int main() {
 
     if (-1 == get_lexems_from_input(&lexems))
         close_with_messege(1, "wrong input", lexems, RPN, tmp);
-    if (-1 == process_lexems(lexems, RPN, tmp))
+    // why last one is doubled??
+    struct node* head = lexems;
+    while (head->next->next)
+        head = head->next;
+    head->next = NULL;
+    // end of kostyl
+    if (-1 == process_lexems(lexems, &RPN, tmp))
         close_with_messege(1, "logic error", lexems, RPN, tmp);
 
+    output_list(RPN);
+
+    printf("stack_size %zu\n", tmp->size);
     struct mb_dbl ey[FIELD_X];
     fill_array(ey, RPN, tmp);
+    for (int i = 0; i < FIELD_X; i++) {
+        printf("%.2lf ", ey[i].num);
+    }
 
     draw_by_array(ey);
 
     close_with_messege(0, "", lexems, RPN, tmp);
+}
+
+void output_lexem(struct lexem value) {
+    if (value.lex_type == VAR)
+        printf("x\n");
+    else if (value.lex_type == NUM)
+        printf("%lf\n", value.num);
+    else if (value.lex_type == OPER)
+        printf("oper %u\n", value.operation);
 }
 
 void fill_array(struct mb_dbl ey[], struct node* RPN, struct stack* tmp) {

@@ -14,7 +14,6 @@
 #define EMPTY_POINT "."
 #define FUNC_POINT "*"
 
-
 enum lex_types {
     NUM,
     VAR,
@@ -52,5 +51,7 @@ struct mb_dbl {
     int valid;
     double num;
 };
+
+void output_lexem(struct lexem value);
 
 #endif  // SRC_MAIN_H_

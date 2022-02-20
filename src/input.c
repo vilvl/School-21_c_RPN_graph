@@ -45,13 +45,10 @@ int get_lexems_from_input(struct node** head_list) {
             if( tg_search(&i, str_input, &c, &a) == -1)
                 ret = -1;
         }
-        i = i+1;
-        if (!*head_list) {
-            *head_list = list_add_back(NULL, a);
-            last_list = *head_list;
-        } else {
-            last_list = list_add_back(last_list, a);
-        }
+        i += 1;
+        last_list = list_add_back(last_list, a);
+        if (!*head_list)
+            *head_list = last_list;
     }
     return ret;
 }

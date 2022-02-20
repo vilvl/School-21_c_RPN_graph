@@ -23,4 +23,6 @@ int push(struct stack *s, struct lexem value);
 int pop(struct stack *s, struct lexem *value);
 int peek(struct stack *s, struct lexem *value);
 
+void output_list(struct node* head);
+
 #endif  // SRC_DS_H_

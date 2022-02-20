@@ -94,3 +94,9 @@ void list_destroy(struct node* root) {
     }
 }
 
+void output_list(struct node* head) {
+    while (head) {
+        output_lexem(head->value);
+        head = head->next;
+    }
+}

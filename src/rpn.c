@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "rpn.h"
 #include "main.h"
 #include "ds.h"
@@ -14,17 +16,9 @@ double apply_unary_operation(enum operations oper, double a);
 double apply_binary_operation(enum operations oper, double a, double b);
 
 
+int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
 
-
-
-
-
-
-
-
-int process_lexems(struct node* lexems, struct node* RPN, struct stack* tmp) {
-
-    struct node* RPN_last = RPN;
+    struct node* RPN_last = *RPN;
     struct node* prev = NULL;
     struct lexem curr;
 
@@ -36,22 +30,22 @@ int process_lexems(struct node* lexems, struct node* RPN, struct stack* tmp) {
             if (lexems->value.operation == BRO) {
                 push(tmp, lexems->value);
             } else if (lexems->value.operation == BRC) {
-                process_BRC(&RPN, &RPN_last, tmp);
+                process_BRC(RPN, &RPN_last, tmp);
             } else if (get_operation_priority(curr.operation) == 3) {
                 push(tmp, lexems->value);
             } else {
-                process_oper(&RPN, &RPN_last, tmp, lexems->value);
+                process_oper(RPN, &RPN_last, tmp, lexems->value);
                 push(tmp, lexems->value);
             }
         } else {
-            RPN_add_back(&RPN, &RPN_last, lexems->value);
+            RPN_add_back(RPN, &RPN_last, lexems->value);
         }
         prev = lexems;
         lexems = lexems->next;
     }
     while (tmp->size) {
         pop(tmp, &curr);
-        RPN_add_back(&RPN, &RPN_last, curr);
+        RPN_add_back(RPN, &RPN_last, curr);
     }
     return 0;
 }
@@ -95,7 +89,7 @@ void define_minus(struct node* prev, struct node* lexems) {
 
 void RPN_add_back(struct node** RPN, struct node** RPN_last, struct lexem value) {
     *RPN_last = list_add_back(*RPN_last, value);
-    if (*RPN)
+    if (!*RPN)
         *RPN = *RPN_last;
 }
 
@@ -122,28 +116,34 @@ int get_operation_priority(enum operations oper) {
         case BRO:
         case BRC:
             ret = 4; break;
-        case MINUS:
+        default:
             ret = -1; break;
     }
     return ret;
 }
 
 struct mb_dbl calculate_with_RPN(struct node* RPN, struct stack* tmp, double x) {
-
     struct lexem curr;
     while (RPN) {
+        // output_lexem(RPN->value);
         curr = RPN->value;
         if (curr.lex_type == VAR) {
-            push( tmp, (struct lexem) {.lex_type = NUM, .num = x} );
+            curr.lex_type = NUM;
+            curr.num = x;
+            push( tmp, curr );
         } else if (curr.lex_type == NUM) {
             push( tmp, curr );
         } else {  // RPN->value.lex_type = OPER
             apply_operation(tmp, curr.operation);
         }
-        RPN=RPN->next;
+        RPN = RPN->next;
     }
     pop(tmp, &curr);
-    return (struct mb_dbl) {.valid = 0, .num = curr.num};
+    // printf("%.2lf %.2lf\n", x, curr.num);
+    struct mb_dbl d;
+    d.valid = 1;
+    d.num = curr.num;
+    return d;
 }
 
 void apply_operation(struct stack* tmp, enum operations oper) {
@@ -160,6 +160,7 @@ void apply_operation(struct stack* tmp, enum operations oper) {
         pop(tmp, &curr);
         a = curr.num;
         curr.num = apply_binary_operation(oper, a, b);
+        // printf("%lf %lf %lf\n", a, b, curr.num);
         push(tmp, curr);
     }
 
