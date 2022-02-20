@@ -21,15 +21,15 @@ int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
     struct node* prev = NULL;
     struct lexem curr;
 
-    while (lexems) {
+    int ret = 0;
+    while (lexems && ret != -1) {
         if (lexems->value.lex_type == OPER) {
-            if (lexems->value.operation == MINUS) {
+            if (lexems->value.operation == MINUS)
                 define_minus(prev, lexems);
-            }
             if (lexems->value.operation == BRO) {
                 push(tmp, lexems->value);
             } else if (lexems->value.operation == BRC) {
-                process_BRC(RPN, &RPN_last, tmp);
+                ret = process_BRC(RPN, &RPN_last, tmp);
             // } else if (get_operation_priority(curr.operation) == 3) {
             //    push(tmp, lexems->value);
             } else {
@@ -42,11 +42,13 @@ int process_lexems(struct node* lexems, struct node** RPN, struct stack* tmp) {
         prev = lexems;
         lexems = lexems->next;
     }
-    while (tmp->size) {
+    while (tmp->size && ret != -1) {
         pop(tmp, &curr);
+        if (curr.lex_type == OPER && curr.operation == BRO)
+            ret = -1;
         RPN_add_back(RPN, &RPN_last, curr);
     }
-    return 0;
+    return ret;
 }
 
 void process_oper(struct node** RPN, struct node** RPN_last, struct stack* tmp, struct lexem value) {
