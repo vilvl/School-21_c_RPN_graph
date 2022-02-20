@@ -4,22 +4,16 @@
 #include "input.h"
 #include "main.h"
 
-int ret_tg_operations(struct lexem* a, char *temp);                         //  write to list tg operations
-int numbers_search(int * i, char * str_input, char * c, struct lexem* a);   //  serching numbers. detect error with two points
-void ret_math_operations(struct lexem* a, char c);                          //  write to list math operations
-void numbers(struct lexem* a, char * c);                                    //  numbers from array to double
-int tg_search(int * i, char * str_input, char * c, struct lexem* a);       //  searching tg operations
+int ret_tg_operations(struct lexem* a, char *temp);
+int numbers_search(int * i, char * str_input, char * c, struct lexem* a);
+void ret_math_operations(struct lexem* a, char c);
+void numbers(struct lexem* a, char * c);
+int tg_search(int * i, char * str_input, char * c, struct lexem* a);
 
-// Создать связный список
-//Передать себе
-//Вывести
 int get_lexems_from_input(struct node** head_list) {
     struct node* last_list = *head_list;
-
-    // Указатели!!!!!!!!!!
     int ret = 0;
     char c;
-    // char temp[50];
     char str_input[1024];
     int i = 0;
     if (fgets(str_input, 1024, stdin) == NULL)
@@ -28,24 +22,22 @@ int get_lexems_from_input(struct node** head_list) {
     while (str_input[i] != '\0') {
         struct lexem a;
         c = str_input[i];
-        if(str_input[i] == ' ') {
+        if (str_input[i] == ' ') {
             i++;
             continue;
         }
         if (c == '*' || c == '/' || c == '+' || c == 'x' ||
             c == '-' || c == '(' || c == ')' || c == '^') {
-            ret_math_operations(&a, c);  // void
-            // printf("%c\n", c); // PRINT
+            ret_math_operations(&a, c);
         }
-        if ((c <= '9' && c >= '0') || c == '.') {  // NUMBERS
-            if (numbers_search(&i, str_input, &c, &a) == -1) {  // INT RETURN
+        if ((c <= '9' && c >= '0') || c == '.') {
+            if (numbers_search(&i, str_input, &c, &a) == -1) {
                 ret = -1;
                 break;
             }
-
-        } // &i &c str_input, a
-        if ( c == 'c' || c == 't' || c == 's' || c == 'l') { // OPERATIONS
-            if( tg_search(&i, str_input, &c, &a) == -1)
+        }
+        if (c == 'c' || c == 't' || c == 's' || c == 'l') {
+            if (tg_search(&i, str_input, &c, &a) == -1)
                 ret = -1;
         }
         i += 1;
@@ -65,22 +57,22 @@ int ret_tg_operations(struct lexem* a, char *temp) {
     else if (strcmp("ln", temp) == 0) a->operation = LN;
     else if (strcmp("ctg", temp) == 0) a->operation = CTG;
     else if (strcmp("sqrt", temp) == 0) a->operation = SQRT;
-    else {
+    else
         flag = 1;
-    }
 
-    if (flag == 0) a->lex_type = OPER;
-    else {
-    a->lex_type = ERR; /////// ВЕРНУТЬ -1
-    // printf("%s", temp);
-    ret = -1;
+    if (flag == 0) {
+        a->lex_type = OPER;
+    } else {
+        a->lex_type = ERR;
+        ret = -1;
     }
     return ret;
 }
 
 void ret_math_operations(struct lexem* a, char c) {
-    if (c == 'x') a->lex_type = VAR;
-    else {
+    if (c == 'x') {
+        a->lex_type = VAR;
+    } else {
         if (c == '/') a->operation =  DIV;
         else if (c == '*') a->operation = MUL;
         else if (c == '+') a->operation = SUM;
@@ -95,7 +87,7 @@ void ret_math_operations(struct lexem* a, char c) {
 void numbers(struct lexem* a, char * c) {
     double n;
     sscanf(c, "%lf", &n);
-    //printf("!!!");
+    // printf("!!!");
     a->lex_type = NUM;
     a->num = n;
 }
@@ -130,13 +122,13 @@ int numbers_search(int * i, char * str_input, char * c, struct lexem* a) {
     temp[j] = *c;
     j = j+1;
     *c = str_input[(*i)];
-    while (*c != '\0' &&  ((*c <= '9' && *c >= '0') || *c == '.')) { // !!!! FGETS END WITH "\N" ????
+    while (*c != '\0' &&  ((*c <= '9' && *c >= '0') || *c == '.')) {
         if (*c == 46) flag = 1;
         temp[j] = *c;
         j++; (*i)++;
         *c = str_input[(*i)];
             if (*c == 46 && flag == 1) {
-                ret = -1; // BREAK!!!!
+                ret = -1;
                 break;
             }
     }
@@ -146,5 +138,3 @@ int numbers_search(int * i, char * str_input, char * c, struct lexem* a) {
     *i = (*i) - 1;
     return ret;
 }
-
-//struct node * add_node_back(struct node*, struct lexem);
