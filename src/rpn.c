@@ -6,6 +6,22 @@
 void RPN_add_back(struct node** RPN, struct node** RPN_last, struct lexem value);
 void define_minus(struct node* prev, struct node* lexems);
 
+void process_oper(struct node** RPN, struct node** RPN_last, struct stack* tmp, struct lexem value);
+int process_BRC(struct node** RPN, struct node** RPN_last, struct stack* tmp);
+int get_operation_priority(enum operations oper);
+void apply_operation(struct stack* tmp, enum operations oper);
+double apply_unary_operation(enum operations oper, double a);
+double apply_binary_operation(enum operations oper, double a, double b);
+
+
+
+
+
+
+
+
+
+
 int process_lexems(struct node* lexems, struct node* RPN, struct stack* tmp) {
 
     struct node* RPN_last = RPN;
@@ -45,10 +61,10 @@ void process_oper(struct node** RPN, struct node** RPN_last, struct stack* tmp, 
     while (peek(tmp, &curr) && (curr.operation != BRO) &&
             (value.operation = POW &&
                 (get_operation_priority(curr.operation)
-                > get_operation_priority(value.operation)))
+                > get_operation_priority(value.operation))
             || (value.operation != POW &&
                 (get_operation_priority(curr.operation)
-                >= get_operation_priority(value.operation)))) {
+                >= get_operation_priority(value.operation))))) {
         pop(tmp, &curr);
         RPN_add_back(RPN, RPN_last, curr);
     }
@@ -106,19 +122,20 @@ int get_operation_priority(enum operations oper) {
         case BRO:
         case BRC:
             ret = 4; break;
+        case MINUS:
+            ret = -1; break;
     }
     return ret;
 }
-
 
 struct mb_dbl calculate_with_RPN(struct node* RPN, struct stack* tmp, double x) {
 
     struct lexem curr;
     while (RPN) {
         curr = RPN->value;
-        if (curr.lex_type = VAR) {
+        if (curr.lex_type == VAR) {
             push( tmp, (struct lexem) {.lex_type = NUM, .num = x} );
-        } else if (curr.lex_type = NUM) {
+        } else if (curr.lex_type == NUM) {
             push( tmp, curr );
         } else {  // RPN->value.lex_type = OPER
             apply_operation(tmp, curr.operation);
@@ -157,6 +174,7 @@ double apply_unary_operation(enum operations oper, double a) {
         case LN: return log(a);
         case SQRT: return sqrt(a);
         case NEG: return -a;
+        default: return NAN;
     }
 }
 
@@ -167,5 +185,6 @@ double apply_binary_operation(enum operations oper, double a, double b) {
         case MUL: return a * b;
         case DIV: return a / b;
         case POW: return pow(a, b);
+        default: return NAN;
     }
 }

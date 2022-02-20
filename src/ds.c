@@ -17,7 +17,7 @@ struct stack* stack_init() {
     return s;
 }
 
-void destroy(struct stack **s) {
+void stack_destroy(struct stack **s) {
     list_destroy((*s)->data);
     free(*s);
     *s = NULL;
@@ -68,10 +68,11 @@ struct node* list_add_front(struct node* root, struct lexem value) {
 }
 
 struct node* list_add_back(struct node* root, struct lexem value) {
+    while (root && root->next)
+        root = root->next;
     struct node *inj = list_init(value);
-    if (inj == NULL) {
+    if (inj == NULL)
         return NULL;
-    }
     if (root)
         root->next = inj;
     return inj;

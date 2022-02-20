@@ -9,10 +9,10 @@
 #define X_MAX 6.28318530717958647692528676655900576
 
 #define Y_0 -1.0
-#define Y_max 1.0
+#define Y_MAX 1.0
 
-#define EMPTY_POINT '.'
-#define FUNC_POINT '*'
+#define EMPTY_POINT "."
+#define FUNC_POINT "*"
 
 
 enum lex_types {
